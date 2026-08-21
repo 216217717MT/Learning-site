@@ -1,0 +1,107 @@
+models:
+  Category:
+    slug: string:50 unique
+    name: string:100
+    icon: string:20 nullable
+    sort_order: integer default:0
+    relationships:
+      hasMany: Guide
+
+  Guide:
+    category_id: id foreign:categories
+    tag: string:20 unique
+    slug: string:150 unique
+    title: string:255
+    summary: text nullable
+    status: enum:draft,published,archived default:draft
+    views_count: integer default:0
+    helpful_count: integer default:0
+    not_helpful_count: integer default:0
+    created_by_id: id foreign:users nullable
+    updated_by_id: id foreign:users nullable
+    published_at: timestamp nullable
+    relationships:
+      belongsTo: Category
+      hasMany: GuideStep, GuideVideo, GuideFeedback, GuideView
+
+  GuideStep:
+    guide_id: id foreign:guides
+    step_number: integer
+    content: text
+    relationships:
+      belongsTo: Guide
+
+  GuideVideo:
+    guide_id: id foreign:guides
+    provider: enum:youtube,vimeo,upload default:youtube
+    video_url: string:500
+    duration_seconds: integer nullable
+    sort_order: integer default:0
+    relationships:
+      belongsTo: Guide
+
+  GuideFeedback:
+    guide_id: id foreign:guides
+    user_id: id foreign:users nullable
+    is_helpful: boolean
+    comment: text nullable
+    relationships:
+      belongsTo: Guide, User
+
+  GuideView:
+    guide_id: id foreign:guides
+    user_id: id foreign:users nullable
+    viewed_at: timestamp nullable
+    relationships:
+      belongsTo: Guide, User
+
+  SearchLog:
+    query_text: string:255
+    normalized_query: string:255
+    result_count: integer
+    user_id: id foreign:users nullable
+    relationships:
+      belongsTo: User
+
+  AuditLog:
+    actor_id: id foreign:users nullable
+    action: string:50
+    entity_type: string:50
+    entity_id: uuid nullable
+    metadata: json nullable
+    relationships:
+      belongsTo: User:actor_id
+
+controllers:
+  # Public, student-facing controllers.
+  # The admin side (managing Guides/Categories) is handled separately by
+  # Filament resources, not these controllers -- see the note below.
+
+  Guide:
+    index:
+      query: all
+      render: guide.index with:guides
+
+    show:
+      query: find:slug
+      render: guide.show with:guide
+
+  Category:
+    show:
+      query: find:slug
+      render: category.show with:category
+
+  GuideFeedback:
+    store:
+      validate: guide_id, is_helpful, comment
+      save: guideFeedback
+      flash: Thanks for the feedback
+      redirect: back
+
+  SearchLog:
+    store:
+      validate: query_text, result_count
+      save: searchLog
+      redirect: back
+
+seeders: Category, Guide, GuideStep, GuideVideo, GuideFeedback, GuideView, SearchLog, AuditLog

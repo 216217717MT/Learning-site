@@ -1,0 +1,58 @@
+created:
+    - app/Http/Controllers/GuideController.php
+    - app/Http/Controllers/CategoryController.php
+    - app/Http/Controllers/GuideFeedbackController.php
+    - app/Http/Controllers/SearchLogController.php
+    - database/factories/CategoryFactory.php
+    - database/factories/GuideFactory.php
+    - database/factories/GuideStepFactory.php
+    - database/factories/GuideVideoFactory.php
+    - database/factories/GuideFeedbackFactory.php
+    - database/factories/GuideViewFactory.php
+    - database/factories/SearchLogFactory.php
+    - database/factories/AuditLogFactory.php
+    - database/migrations/2026_07_17_120954_create_categories_table.php
+    - database/migrations/2026_07_17_120955_create_guides_table.php
+    - database/migrations/2026_07_17_120956_create_guide_steps_table.php
+    - database/migrations/2026_07_17_120957_create_guide_videos_table.php
+    - database/migrations/2026_07_17_120958_create_guide_feedback_table.php
+    - database/migrations/2026_07_17_120959_create_guide_views_table.php
+    - database/migrations/2026_07_17_121000_create_search_logs_table.php
+    - database/migrations/2026_07_17_121001_create_audit_logs_table.php
+    - app/Models/Category.php
+    - app/Models/Guide.php
+    - app/Models/GuideStep.php
+    - app/Models/GuideVideo.php
+    - app/Models/GuideFeedback.php
+    - app/Models/GuideView.php
+    - app/Models/SearchLog.php
+    - app/Models/AuditLog.php
+    - database/seeders/CategorySeeder.php
+    - database/seeders/GuideSeeder.php
+    - database/seeders/GuideStepSeeder.php
+    - database/seeders/GuideVideoSeeder.php
+    - database/seeders/GuideFeedbackSeeder.php
+    - database/seeders/GuideViewSeeder.php
+    - database/seeders/SearchLogSeeder.php
+    - database/seeders/AuditLogSeeder.php
+    - tests/Feature/Http/Controllers/GuideControllerTest.php
+    - tests/Feature/Http/Controllers/CategoryControllerTest.php
+    - tests/Feature/Http/Controllers/GuideFeedbackControllerTest.php
+    - tests/Feature/Http/Controllers/SearchLogControllerTest.php
+updated:
+    - routes/web.php
+skipped:
+    - resources/views/guide/index.blade.php
+    - resources/views/guide/show.blade.php
+    - resources/views/category/show.blade.php
+models:
+    Article: {  }
+    User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string nullable', sso_subject_id: 'string nullable', student_number: 'string nullable', staff_number: 'string nullable', role: "string default:'student'", last_login_at: 'datetime nullable' }
+    Category: { slug: 'string:50 unique', name: 'string:100', icon: 'string:20 nullable', sort_order: 'integer default:0', relationships: { hasMany: Guide } }
+    Guide: { category_id: 'id foreign:categories', tag: 'string:20 unique', slug: 'string:150 unique', title: 'string:255', summary: 'text nullable', status: 'enum:draft,published,archived default:draft', views_count: 'integer default:0', helpful_count: 'integer default:0', not_helpful_count: 'integer default:0', created_by_id: 'id foreign:users nullable', updated_by_id: 'id foreign:users nullable', published_at: 'timestamp nullable', relationships: { belongsTo: Category, hasMany: 'GuideStep, GuideVideo, GuideFeedback, GuideView' } }
+    GuideStep: { guide_id: 'id foreign:guides', step_number: integer, content: text, relationships: { belongsTo: Guide } }
+    GuideVideo: { guide_id: 'id foreign:guides', provider: 'enum:youtube,vimeo,upload default:youtube', video_url: 'string:500', duration_seconds: 'integer nullable', sort_order: 'integer default:0', relationships: { belongsTo: Guide } }
+    GuideFeedback: { guide_id: 'id foreign:guides', user_id: 'id foreign:users nullable', is_helpful: boolean, comment: 'text nullable', relationships: { belongsTo: 'Guide, User' } }
+    GuideView: { guide_id: 'id foreign:guides', user_id: 'id foreign:users nullable', viewed_at: 'timestamp nullable', relationships: { belongsTo: 'Guide, User' } }
+    SearchLog: { query_text: 'string:255', normalized_query: 'string:255', result_count: integer, user_id: 'id foreign:users nullable', relationships: { belongsTo: User } }
+    AuditLog: { actor_id: 'id foreign:users nullable', action: 'string:50', entity_type: 'string:50', entity_id: 'uuid nullable', metadata: 'json nullable', relationships: { belongsTo: 'User:actor_id' } }
