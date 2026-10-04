@@ -166,6 +166,20 @@ that doesn't match the actual interface.
 
 ---
 
+## Documentation
+
+For anyone picking up this project:
+
+- **[Functional & Non-Functional Requirements](docs/CPUT_Training_Portal_FRD.docx)** —
+  the original requirements document, covering scope, user stories, and
+  priorities for every feature.
+- **[Project Guide](docs/PROJECT_GUIDE.md)** — a full breakdown of every
+  file and folder, plus a "where do I go to fix X" lookup table.
+- **[Database schema reference](docs/schema.sql)** — the original planned
+  database design (note: the actual live schema, built via Laravel
+  migrations, uses simpler auto-incrementing IDs rather than the UUIDs
+  shown here — see `database/migrations/` for the real, current structure).
+
 ## Credits
 
 Built by Tshepang Molefe, CPUT Service Desk.
